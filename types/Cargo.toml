@@ -19,8 +19,8 @@ fixed-hash = {version = "0.7", default-features = false}
 thiserror = { version = "1.0", default-features = false }
 sha3 = { version = "0.9", default-features = false }
 
-trie-eip1186 = {git = "https://github.com/ChorusOne/trie", branch = "giulio/eip1186", default-features = false, features =["std"]}
-trie-db = {git = "https://github.com/ChorusOne/trie", branch = "giulio/eip1186", default-features = false, features =["std"]}
+trie-eip1186 = {git = "https://github.com/paritytech/trie", rev = "f64e1b0a8ced1b4b574d2b705202bf790d4394e4"}
+trie-db = {git = "https://github.com/paritytech/trie", rev = "f64e1b0a8ced1b4b574d2b705202bf790d4394e4"}
 byte-slice-cast = {version = "1.2"}
 
 bls-crypto = {git = "https://github.com/ChorusOne/celo-bls-snark-rs", branch = "giulio/random", optional = true}
@@ -31,7 +31,7 @@ serde = { version = "1", features = ["derive"]}
 ethereum-types = {version = "0.11", default-features = false, features = ["rlp", "serialize"]}
 serde_json = {version = "1.0"}
 secp256k1 = { version = "0.20", features = ["bitcoin_hashes", "rand"] }
-trie-db = {git = "https://github.com/ChorusOne/trie", branch = "giulio/eip1186"}
+trie-db = {git = "https://github.com/paritytech/trie", rev = "f64e1b0a8ced1b4b574d2b705202bf790d4394e4"}
 
 [features]
 web3-support = ["web3"]

@@ -13,4 +13,4 @@ schemars = { version = "0.8"}
 thiserror = { version = "1.0", default-features = false }
 cosmwasm-std = { version = "0.16", default-features = false }
 
-ibc-proto = {git = "https://github.com/ChorusOne/ibc-rs", branch = "giulio/proto_cosmwasm", default-features = false, features = ["std"]}
+ibc-proto = {git = "https://github.com/mattsu6666/ibc-rs", branch = "mattsu6666/proto_cosmwasm", default-features = false, features = ["std"]}
