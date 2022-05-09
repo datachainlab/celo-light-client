@@ -70,7 +70,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-relations",
- "ark-serialize 0.3.0 (git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random)",
+ "ark-serialize",
  "ark-snark",
  "ark-sponge",
  "ark-std 0.3.0 (git+https://github.com/ChorusOne/ark-std?branch=giulio/random_feature)",
@@ -85,7 +85,7 @@ version = "0.3.0"
 source = "git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random#4b1be995b2b250a99fe0d13fb3012f67d1a8409e"
 dependencies = [
  "ark-ff",
- "ark-serialize 0.3.0 (git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random)",
+ "ark-serialize",
  "ark-std 0.3.0 (git+https://github.com/ChorusOne/std?branch=giulio/random_feature)",
  "derivative",
  "num-traits",
@@ -118,7 +118,7 @@ source = "git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random#4b1b
 dependencies = [
  "ark-ff-asm",
  "ark-ff-macros",
- "ark-serialize 0.3.0 (git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random)",
+ "ark-serialize",
  "ark-std 0.3.0 (git+https://github.com/ChorusOne/std?branch=giulio/random_feature)",
  "derivative",
  "num-bigint",
@@ -161,16 +161,6 @@ dependencies = [
 [[package]]
 name = "ark-serialize"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d6c2b318ee6e10f8c2853e73a83adc0ccb88995aa978d8a3408d492ab2ee671"
-dependencies = [
- "ark-std 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "digest",
-]
-
-[[package]]
-name = "ark-serialize"
-version = "0.3.0"
 source = "git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random#4b1be995b2b250a99fe0d13fb3012f67d1a8409e"
 dependencies = [
  "ark-serialize-derive",
@@ -205,21 +195,11 @@ source = "git+https://github.com/ChorusOne/ark-sponge?branch=giulio/random#786b3
 dependencies = [
  "ark-ec",
  "ark-ff",
- "ark-serialize 0.3.0 (git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random)",
+ "ark-serialize",
  "ark-std 0.3.0 (git+https://github.com/ChorusOne/ark-std?branch=giulio/random_feature)",
  "derivative",
  "digest",
  "rand_chacha 0.3.1",
-]
-
-[[package]]
-name = "ark-std"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1df2c09229cbc5a028b1d70e00fdb2acee28b1055dfb5ca73eea49c5a25c4e7c"
-dependencies = [
- "num-traits",
- "rand 0.8.4",
 ]
 
 [[package]]
@@ -367,13 +347,14 @@ checksum = "8d696c370c750c948ada61c69a0ee2cbbb9c50b1019ddb86d9317157a99c2cae"
 [[package]]
 name = "bls-crypto"
 version = "0.2.0"
+source = "git+https://github.com/ChorusOne/celo-bls-snark-rs?branch=giulio/random#0d4f7390d3184860d517bf86dd9bb3240ce19ef5"
 dependencies = [
  "ark-bls12-377",
  "ark-crypto-primitives",
  "ark-ec",
  "ark-ed-on-bw6-761",
  "ark-ff",
- "ark-serialize 0.3.0 (git+https://github.com/ChorusOne/ark-algebra?branch=giulio/random)",
+ "ark-serialize",
  "ark-std 0.3.0 (git+https://github.com/ChorusOne/ark-std?branch=giulio/random_feature)",
  "blake2s_simd",
  "byteorder",
@@ -463,10 +444,9 @@ dependencies = [
 name = "celo-types"
 version = "0.1.0"
 dependencies = [
- "ark-serialize 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-serialize",
  "bls-crypto",
  "byte-slice-cast",
- "bytes",
  "ethereum-types",
  "fixed-hash",
  "hex",
@@ -480,6 +460,7 @@ dependencies = [
  "sha3",
  "thiserror",
  "trie-db",
+ "trie-eip1186",
  "web3",
 ]
 
@@ -488,17 +469,6 @@ name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
-
-[[package]]
-name = "chrono"
-version = "0.4.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "670ad68c9088c2a963aaa298cb369688cf3f9465ce5e2d4ca10e6e0098a1ce73"
-dependencies = [
- "num-integer",
- "num-traits",
- "serde",
-]
 
 [[package]]
 name = "clap"
@@ -1286,6 +1256,7 @@ dependencies = [
 [[package]]
 name = "hash-db"
 version = "0.15.2"
+source = "git+https://github.com/ChorusOne/trie?branch=giulio/eip1186#44a3c5e9c269111110537287aec8cc9050824446"
 
 [[package]]
 name = "hashbrown"
@@ -1309,7 +1280,7 @@ dependencies = [
  "http",
  "mime",
  "sha-1",
- "time",
+ "time 0.1.43",
 ]
 
 [[package]]
@@ -1428,7 +1399,8 @@ dependencies = [
 
 [[package]]
 name = "ibc-proto"
-version = "0.13.0"
+version = "0.14.0"
+source = "git+https://github.com/ChorusOne/ibc-rs?branch=giulio/proto_cosmwasm#66beeeab647075ae52d28a28af2d18c5fe834edd"
 dependencies = [
  "base64",
  "bytes",
@@ -2866,12 +2838,11 @@ dependencies = [
 
 [[package]]
 name = "tendermint-proto"
-version = "0.23.1"
+version = "0.23.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1b8319fcf0860833eabe3278cf2d94ca20ef04bee6a77d892f986026fb1c252"
+checksum = "10ba5f19afd52d69aa139cbf2a2ad129673a87aebeb66742b852a4d91b482e7b"
 dependencies = [
  "bytes",
- "chrono",
  "flex-error",
  "num-derive",
  "num-traits",
@@ -2880,6 +2851,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "subtle-encoding",
+ "time 0.3.5",
 ]
 
 [[package]]
@@ -2929,6 +2901,22 @@ dependencies = [
  "libc",
  "winapi",
 ]
+
+[[package]]
+name = "time"
+version = "0.3.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41effe7cfa8af36f439fac33861b66b049edc6f9a32331e2312660529c1c24ad"
+dependencies = [
+ "libc",
+ "time-macros",
+]
+
+[[package]]
+name = "time-macros"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25eb0ca3468fc0acc11828786797f6ef9aa1555e4a211a60d64cc8e4d1be47d6"
 
 [[package]]
 name = "tiny-keccak"
@@ -3071,12 +3059,24 @@ dependencies = [
 [[package]]
 name = "trie-db"
 version = "0.23.0"
+source = "git+https://github.com/ChorusOne/trie?branch=giulio/eip1186#44a3c5e9c269111110537287aec8cc9050824446"
 dependencies = [
  "hash-db",
  "hashbrown",
  "log",
  "rustc-hex",
  "smallvec",
+]
+
+[[package]]
+name = "trie-eip1186"
+version = "0.1.0"
+source = "git+https://github.com/ChorusOne/trie?branch=giulio/eip1186#44a3c5e9c269111110537287aec8cc9050824446"
+dependencies = [
+ "hash-db",
+ "log",
+ "smallvec",
+ "trie-db",
 ]
 
 [[package]]
@@ -3487,6 +3487,7 @@ dependencies = [
 [[package]]
 name = "web3"
 version = "0.17.0"
+source = "git+https://github.com/ChorusOne/rust-web3?branch=celo#1c0885f09b1dd01fe1663205d6ccf1434f540a82"
 dependencies = [
  "arrayvec 0.5.2",
  "base64",
