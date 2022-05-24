@@ -9,8 +9,8 @@ edition = "2018"
 ethereum-types = {version = "0.11", default-features = false}
 rlp = {version = "0.5"}
 serde = { version = "1", features = ["derive"]}
-schemars = { version = "0.8"}
+schemars = { version = "0.7"}
 thiserror = { version = "1.0", default-features = false }
-cosmwasm-std = { version = "0.16", default-features = false }
+cosmwasm-std = { version = "0.13.2", default-features = false }
 
-ibc-proto = {git = "https://github.com/ChorusOne/ibc-rs", branch = "giulio/proto_cosmwasm", default-features = false, features = ["std"]}
+ibc-proto = {git = "https://github.com/mattsu6666/ibc-rs", branch = "mattsu6666/proto_cosmwasm_013", default-features = false, features = ["std"]}

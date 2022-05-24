@@ -7,7 +7,7 @@ use celo_types::state::State as CeloState;
 
 use ibc_proto::ibc::core::client::v1::Height;
 
-use cosmwasm_std::{to_binary, Response, StdError, StdResult, Timestamp};
+use cosmwasm_std::{attr, to_binary, StdError, StdResult, HandleResponse};
 use serde::Serialize;
 use std::fmt::Display;
 
@@ -20,32 +20,34 @@ where
     }
 }
 
-pub(crate) fn wrap_response<T>(result: T, action: &'static str) -> StdResult<Response>
+pub(crate) fn wrap_response<T>(result: T, action: &'static str) -> StdResult<HandleResponse>
 where
     T: Serialize,
 {
     let response_data = to_binary(&result)?;
-    let response = Response::new()
-        .add_attribute("action", action)
-        .set_data(response_data);
-
-    Ok(response)
+    Ok(HandleResponse {
+        messages: vec![],
+        attributes: vec![attr("action", action)],
+        data: Some(response_data),
+    })
 }
 pub(crate) fn wrap_response_with_height<T>(
     result: T,
     action: &'static str,
     height: &Height,
-) -> StdResult<Response>
+) -> StdResult<HandleResponse>
 where
     T: Serialize,
 {
     let response_data = to_binary(&result)?;
-    let response = Response::new()
-        .add_attribute("action", action)
-        .add_attribute("latest_height", format!("{:?}", height))
-        .set_data(response_data);
 
-    Ok(response)
+    Ok(HandleResponse {
+        messages: vec![],
+        attributes: vec![
+            attr("action", action),
+            attr("latest_height", format!("{:?}", height))],
+        data: Some(response_data),
+    })
 }
 
 pub(crate) fn check_misbehaviour_header(
@@ -66,9 +68,9 @@ pub(crate) fn check_misbehaviour_header(
 }
 
 pub(crate) fn is_expired(
-    current_timestamp: Timestamp,
-    latest_timestamp: Timestamp,
+    current_timestamp: u64,
+    latest_timestamp: u64,
     trusting_period: u64,
 ) -> bool {
-    current_timestamp > latest_timestamp.plus_seconds(trusting_period)
+    current_timestamp > latest_timestamp + trusting_period
 }

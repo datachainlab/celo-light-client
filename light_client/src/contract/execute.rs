@@ -12,9 +12,7 @@ use celo_ibc::header::extract_header;
 use celo_ibc::state::{extract_client, extract_consensus};
 use celo_types::state::State as CeloState;
 use celo_types::verify;
-use cosmwasm_std::{
-    Binary, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Timestamp, VerificationError,
-};
+use cosmwasm_std::{Binary, DepsMut, Env, HandleResponse, MessageInfo, StdError, StdResult};
 use ibc_proto::ibc::core::client::v1::Height;
 
 pub(crate) fn init_contract(
@@ -23,7 +21,7 @@ pub(crate) fn init_contract(
     _info: MessageInfo,
     consensus_state: WasmConsensusState,
     me: WasmClientState,
-) -> StdResult<Response> {
+) -> StdResult<HandleResponse> {
     // Unmarshal Celo state
     let celo_consensus =
         extract_consensus(&consensus_state).map_err(|e| convert_rlp(e, "CeloConsensusState"))?;
@@ -34,8 +32,8 @@ pub(crate) fn init_contract(
     if me.latest_height.revision_number != celo_client.chain_id
         || me.latest_height.revision_height != celo_consensus.number
     {
-        return Err(StdError::VerificationErr {
-            source: VerificationError::GenericErr,
+        return Err(StdError::GenericErr {
+            msg: String::from("VerificationErr"),
         });
     }
     // Set metadata for initial consensus state
@@ -55,8 +53,8 @@ pub(crate) fn check_header_and_update_state(
     me: WasmClientState,
     consensus_state: WasmConsensusState,
     wasm_header: WasmHeader,
-) -> StdResult<Response> {
-    let current_timestamp: u64 = env.block.time.seconds();
+) -> StdResult<HandleResponse> {
+    let current_timestamp: u64 = env.block.time;
     // Unmarshal celo states
     let celo_consensus =
         extract_consensus(&consensus_state).map_err(|e| convert_rlp(e, "CeloConsensusState"))?;
@@ -75,7 +73,7 @@ pub(crate) fn check_header_and_update_state(
     let new_client_state = me;
     let new_consensus_state = WasmConsensusState::new(
         state.snapshot(),
-        Timestamp::from_seconds(celo_header.time.as_u64()),
+        celo_header.time.as_u64(),
         celo_header.root,
     );
     // set metadata for this consensus state
@@ -95,8 +93,8 @@ pub(crate) fn check_misbehaviour(
     misbehaviour: WasmMisbehaviour,
     consensus_state1: WasmConsensusState,
     consensus_state2: WasmConsensusState,
-) -> StdResult<Response> {
-    // The header heights are expected to be the same
+) -> StdResult<HandleResponse> {
+    // The head_client_upgrade_proofer heights are expected to be the same
     if misbehaviour.header_1.height != misbehaviour.header_2.height {
         return Err(util::to_generic_err(format!(
             "Misbehaviour header heights differ, {:?} != {:?}",
@@ -153,7 +151,7 @@ pub(crate) fn verify_upgrade_and_update_state(
     new_consensus_state: WasmConsensusState,
     _client_upgrade_proof: Binary,
     _consensus_state_upgrade_proof: Binary,
-) -> StdResult<Response> {
+) -> StdResult<HandleResponse> {
     // Sanity check
     if new_client_state.latest_height <= me.latest_height {
         return Err(util::to_generic_err(format!(
@@ -199,7 +197,7 @@ pub(crate) fn check_substitute_client_state(
     substitute_client_state: WasmClientState,
     subject_consensus_state: WasmConsensusState,
     initial_height: Height,
-) -> StdResult<Response> {
+) -> StdResult<HandleResponse> {
     if substitute_client_state.latest_height != initial_height {
         return Err(StdError::generic_err(format!(
            "substitute client revision number must equal initial height revision number ({:?} != {:?})",
@@ -263,7 +261,7 @@ pub(crate) fn zero_custom_fields(
     _deps: DepsMut,
     _env: Env,
     me: WasmClientState,
-) -> StdResult<Response> {
+) -> StdResult<HandleResponse> {
     let new_client_state = WasmClientState {
         data: me.data,
         ..Default::default()

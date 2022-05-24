@@ -14,7 +14,7 @@ use ibc_proto::ibc::core::client::v1::Height;
 use ibc_proto::ibc::core::commitment::v1::MerklePrefix;
 use ibc_proto::ibc::core::connection::v1::ConnectionEnd;
 
-use cosmwasm_std::{to_binary, Binary, Deps, Env, QueryResponse, StdError, StdResult, Timestamp};
+use cosmwasm_std::{to_binary, Deps, Env, QueryResponse, StdError, StdResult, Binary};
 use ethereum_types::U256;
 
 pub(crate) fn verify_client_state(
@@ -24,7 +24,7 @@ pub(crate) fn verify_client_state(
     _height: Height,
     prefix: MerklePrefix,
     counterparty_client_identifier: String,
-    proof: Binary,
+    proof: String,
     counterparty_client_state: cosmos::ClientState,
     proving_client_state: WasmConsensusState,
 ) -> StdResult<QueryResponse> {
@@ -32,7 +32,7 @@ pub(crate) fn verify_client_state(
     let celo_client: CeloClientState =
         extract_client(&me).map_err(|e| convert_rlp(e, "CeloClientState"))?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::client_commitment_key(
         celo_client.commitment_map_position,
         prefix,
@@ -62,7 +62,7 @@ pub(crate) fn verify_client_consensus_state(
     consensus_height: Height,
     prefix: MerklePrefix,
     counterparty_client_identifier: String,
-    proof: Binary,
+    proof: String,
     counterparty_consensus_state: cosmos::ConsensusState,
     proving_consensus_state: WasmConsensusState,
 ) -> StdResult<QueryResponse> {
@@ -70,7 +70,7 @@ pub(crate) fn verify_client_consensus_state(
     let celo_client: CeloClientState =
         extract_client(&me).map_err(|e| convert_rlp(e, "CeloClientState"))?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::consensus_commitment_key(
         celo_client.commitment_map_position,
         prefix,
@@ -98,7 +98,7 @@ pub(crate) fn verify_connection_state(
     me: WasmClientState,
     _height: Height,
     prefix: MerklePrefix,
-    proof: Binary,
+    proof: String,
     connection_id: String,
     connection_end: ConnectionEnd,
     proving_consensus_state: WasmConsensusState,
@@ -107,7 +107,7 @@ pub(crate) fn verify_connection_state(
     let celo_client: CeloClientState =
         extract_client(&me).map_err(|e| convert_rlp(e, "CeloClientState"))?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::connection_commitment_key(
         celo_client.commitment_map_position,
         prefix,
@@ -134,7 +134,7 @@ pub(crate) fn verify_channel_state(
     me: WasmClientState,
     _height: Height,
     prefix: MerklePrefix,
-    proof: Binary,
+    proof: String,
     port_id: String,
     channel_id: String,
     channel: Channel,
@@ -144,7 +144,7 @@ pub(crate) fn verify_channel_state(
     let celo_client: CeloClientState =
         extract_client(&me).map_err(|e| convert_rlp(e, "CeloClientState"))?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::channel_commitment_key(
         celo_client.commitment_map_position,
         prefix,
@@ -172,13 +172,13 @@ pub(crate) fn verify_packet_commitment(
     me: WasmClientState,
     height: Height,
     prefix: MerklePrefix,
-    proof: Binary,
+    proof: String,
     port_id: String,
     channel_id: String,
     delay_time_period: u64,
     delay_block_period: u64,
     sequence: u64,
-    commitment_bytes: Binary,
+    commitment_bytes: String,
     proving_consensus_state: WasmConsensusState,
 ) -> StdResult<QueryResponse> {
     // Unmarshal Celo state
@@ -193,7 +193,7 @@ pub(crate) fn verify_packet_commitment(
         delay_block_period,
     )?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::packet_key(
         celo_client.commitment_map_position,
         prefix,
@@ -201,7 +201,7 @@ pub(crate) fn verify_packet_commitment(
         &channel_id,
         sequence,
     )?;
-    let value = U256::from(commitment_bytes.as_slice());
+    let value = U256::from(Binary(commitment_bytes.into_bytes()).as_slice());
     verify::verify(
         &proof,
         proving_consensus_state.root(),
@@ -222,13 +222,13 @@ pub(crate) fn verify_packet_acknowledgment(
     me: WasmClientState,
     height: Height,
     prefix: MerklePrefix,
-    proof: Binary,
+    proof: String,
     port_id: String,
     channel_id: String,
     delay_time_period: u64,
     delay_block_period: u64,
     sequence: u64,
-    acknowledgement: Binary,
+    acknowledgement: String,
     proving_consensus_state: WasmConsensusState,
 ) -> StdResult<QueryResponse> {
     // Unmarshal Celo state
@@ -243,7 +243,7 @@ pub(crate) fn verify_packet_acknowledgment(
         delay_block_period,
     )?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::packet_key(
         celo_client.commitment_map_position,
         prefix,
@@ -251,7 +251,7 @@ pub(crate) fn verify_packet_acknowledgment(
         &channel_id,
         sequence,
     )?;
-    let value = identifier::packet_commit_ack(&acknowledgement);
+    let value = identifier::packet_commit_ack(&Binary(acknowledgement.into_bytes()));
     verify::verify(
         &proof,
         proving_consensus_state.root(),
@@ -272,7 +272,7 @@ pub(crate) fn verify_packet_receipt_absence(
     me: WasmClientState,
     height: Height,
     prefix: MerklePrefix,
-    proof: Binary,
+    proof: String,
     port_id: String,
     channel_id: String,
     delay_time_period: u64,
@@ -292,7 +292,7 @@ pub(crate) fn verify_packet_receipt_absence(
         delay_block_period,
     )?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::packet_key(
         celo_client.commitment_map_position,
         prefix,
@@ -320,7 +320,7 @@ pub(crate) fn verify_next_sequence_recv(
     me: WasmClientState,
     height: Height,
     prefix: MerklePrefix,
-    proof: Binary,
+    proof: String,
     port_id: String,
     channel_id: String,
     delay_time_period: u64,
@@ -340,7 +340,7 @@ pub(crate) fn verify_next_sequence_recv(
         delay_block_period,
     )?;
     // Unmarshal proof
-    let proof: Proof = cosmwasm_std::from_binary(&proof)?;
+    let proof: Proof = cosmwasm_std::from_binary(&Binary(proof.into_bytes()))?;
     let key = identifier::packet_key(
         celo_client.next_sequence_rx_map_position,
         prefix,
@@ -389,13 +389,13 @@ fn verify_delay_period_passed(
     deps: Deps,
     proof_height: Height,
     current_height: u64,
-    current_timestamp: Timestamp,
+    current_timestamp: u64,
     delay_time_period: u64,
     delay_block_period: u64,
 ) -> StdResult<()> {
     let processed_time =
         store::get_processed_time(deps.storage, store::EMPTY_PREFIX, &proof_height)?;
-    let valid_time = processed_time.plus_seconds(delay_time_period);
+    let valid_time = processed_time + delay_time_period;
 
     if current_timestamp < valid_time {
         return Err(StdError::generic_err(format!(

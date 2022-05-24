@@ -11,8 +11,8 @@ mod serialization;
 mod store;
 mod util;
 
-use cosmwasm_std::{Deps, DepsMut, Env, MessageInfo};
-use cosmwasm_std::{QueryResponse, Response, StdError, StdResult};
+use cosmwasm_std::{Deps, DepsMut, Env, InitResponse, MessageInfo};
+use cosmwasm_std::{QueryResponse, StdError, HandleResponse, StdResult};
 
 pub(crate) type WasmClientState = celo_ibc::state::ClientState;
 pub(crate) type CeloClientState = celo_types::client::LightClientState;
@@ -25,24 +25,25 @@ pub(crate) type CeloHeader = celo_types::header::Header;
 
 pub(crate) type WasmMisbehaviour = celo_ibc::misbehaviour::Misbehaviour;
 
-pub fn instantiate(
+pub(crate) fn init(
     _deps: DepsMut,
     _env: Env,
     _info: MessageInfo,
     _msg: HandleMsg,
-) -> StdResult<Response> {
+) -> Result<InitResponse, StdError> {
     // The 10-wasm Init method is split into two calls, where the second (via handle())
     // call expects ClientState included in the return.
     //
     // Therefore it's better to execute whole logic in the second call.
-    Ok(Response::default())
+    Ok(InitResponse::default())
 }
-pub fn execute(
+
+pub(crate) fn handle(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
     msg: HandleMsg,
-) -> Result<Response, StdError> {
+) -> Result<HandleResponse, StdError> {
     match msg {
         HandleMsg::InitializeState {
             consensus_state,
@@ -100,7 +101,7 @@ pub fn execute(
     }
 }
 
-pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<QueryResponse> {
+pub(crate) fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<QueryResponse> {
     match msg {
         QueryMsg::VerifyClientState {
             me,

@@ -37,7 +37,7 @@ impl From<ConsensusState> for wasm::ConsensusState {
         let root = convert_hash2root(cs.root());
         Self {
             data: cs.data.0,
-            timestamp: cs.timestamp.seconds(),
+            timestamp: cs.timestamp,
             root: Some(root),
         }
     }

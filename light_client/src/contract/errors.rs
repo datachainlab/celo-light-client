@@ -1,5 +1,5 @@
 use celo_types::errors::Error as CeloError;
-use cosmwasm_std::{StdError, VerificationError};
+use cosmwasm_std::StdError;
 
 pub(crate) fn convert_celo(c_error: CeloError) -> StdError {
     match c_error {
@@ -20,11 +20,11 @@ pub(crate) fn convert_celo(c_error: CeloError) -> StdError {
         CeloError::BlsVerifyError => StdError::GenericErr {
             msg: String::from("CeloError::BlsVerifyError"),
         },
-        CeloError::BlsInvalidSignature(_) => StdError::VerificationErr {
-            source: VerificationError::InvalidSignatureFormat,
+        CeloError::BlsInvalidSignature(_) => StdError::GenericErr {
+            msg: String::from("CeloError::BlsInvalidSignature"),
         },
-        CeloError::BlsInvalidPublicKey => StdError::VerificationErr {
-            source: VerificationError::InvalidPubkeyFormat,
+        CeloError::BlsInvalidPublicKey => StdError::GenericErr {
+            msg: String::from("CeloError::BlsInvalidPublicKey"),
         },
         CeloError::MissingSeals { current, expected } => StdError::GenericErr {
             msg: format!(

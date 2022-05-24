@@ -74,7 +74,7 @@ fn set_processed_time(
     storage: &mut dyn Storage,
     prefix: &'static str,
     height: &Height,
-    time: &cosmwasm_std::Timestamp,
+    time: &u64,
 ) -> StdResult<()> {
     let key = processed_time_key(prefix, height);
     storage.set(&key, &to_vec(time)?);
@@ -86,7 +86,7 @@ pub fn get_processed_time(
     storage: &dyn Storage,
     prefix: &'static str,
     height: &Height,
-) -> StdResult<cosmwasm_std::Timestamp> {
+) -> StdResult<u64> {
     let key = processed_time_key(prefix, height);
 
     must_deserialize(&storage.get(&key))
